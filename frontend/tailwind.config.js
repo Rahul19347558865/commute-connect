@@ -5,13 +5,15 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
+    // Mobile-first breakpoints matching system documentation
     screens: {
-      'xs': '390px',
-      'sm': '768px',
-      'md': '1024px',
-      'lg': '1440px',
+      'xs': '390px',   // Mobile Small/Standard
+      'sm': '768px',   // Tablet
+      'md': '1024px',  // Laptop
+      'lg': '1440px',  // Desktop
     },
     extend: {
+      // Centralized Color System
       colors: {
         brand: {
           primary: '#2563EB',
@@ -28,18 +30,54 @@ export default {
           borderLine: '#E5E7EB',
         }
       },
-      fontFamily: {
-        sans: ['Inter', 'sans-serif'],
+      // Centralized Typography System sizes
+      fontSize: {
+        'h1': ['36px', { lineHeight: '1.25', fontWeight: '700' }],
+        'h2': ['30px', { lineHeight: '1.25', fontWeight: '600' }],
+        'h3': ['24px', { lineHeight: '1.5', fontWeight: '600' }],
+        'h4': ['20px', { lineHeight: '1.5', fontWeight: '500' }],
+        'body': ['16px', { lineHeight: '1.5', fontWeight: '400' }],
+        'small': ['14px', { lineHeight: '1.5', fontWeight: '400' }],
+        'tiny': ['12px', { lineHeight: '1.5', fontWeight: '400' }],
       },
+      // Centralized Spacing System
+      spacing: {
+        'spacing-xs': '4px',
+        'spacing-sm': '8px',
+        'spacing-md': '12px',
+        'spacing-lg': '16px',
+        'spacing-xl': '24px',
+        'spacing-xxl': '32px',
+        'spacing-xxxl': '48px',
+        'spacing-huge': '64px',
+      },
+      // Centralized Border Radius System
       borderRadius: {
-        'sm': '8px',
-        'md': '12px',
-        'lg': '16px',
+        'radius-sm': '8px',
+        'radius-md': '12px',
+        'radius-lg': '16px',
+        'radius-pill': '999px',
       },
+      // Centralized Elevation Shadows System
       boxShadow: {
-        'small': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-        'medium': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-        'large': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+        'shadow-small': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+        'shadow-medium': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+        'shadow-large': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+      },
+      // Centralized Z-Index Hierarchy Layering
+      zIndex: {
+        'layer-dropdown': '10',
+        'layer-sticky': '20',
+        'layer-bottomNav': '30',
+        'layer-overlay': '40',
+        'layer-modal': '50',
+        'layer-toast': '60',
+        'layer-tooltip': '70',
+      },
+      // Consistent transition speed tokens
+      transitionDuration: {
+        'theme-fast': '150ms',
+        'theme-normal': '250ms',
       }
     },
   },
