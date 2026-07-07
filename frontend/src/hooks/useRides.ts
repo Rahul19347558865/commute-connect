@@ -33,9 +33,6 @@ export function useCreateRide() {
   });
 }
 
-/**
- * useRide - Query hook to fetch details of a single ride offering.
- */
 export function useRide(id: string) {
   return useQuery({
     queryKey: ['ride', id],
@@ -46,5 +43,23 @@ export function useRide(id: string) {
     },
     enabled: !!id,
     retry: 1,
+  });
+}
+
+/**
+ * useRideDetails - Query hook to fetch detailed ride data by its ID (reuses useRide logic).
+ */
+export const useRideDetails = useRide;
+
+/**
+ * useSearchRides - TanStack Query hook to search rides based on active filters list.
+ */
+export function useSearchRides(filters: any) {
+  return useQuery({
+    queryKey: ['rides', filters],
+    queryFn: async () => {
+      const response = await apiClient.get('/api/rides', { params: filters });
+      return response.data.data;
+    },
   });
 }

@@ -91,7 +91,7 @@ router.post('/', authMiddleware, async (req: AuthenticatedRequest, res: Response
  * @desc    Lists active rides with optional search filters.
  */
 router.get('/', async (req, res) => {
-  const { pickup, destination, date, seats, contribution_type, status } = req.query;
+  const { pickup, destination, date, seats, contribution_type, status, vehicle_type, sortBy, page, limit } = req.query;
 
   try {
     const rides = await RideService.listRides({
@@ -101,6 +101,10 @@ router.get('/', async (req, res) => {
       seats: seats ? parseInt(seats as string, 10) : undefined,
       contribution_type: contribution_type as string,
       status: status as 'active' | 'completed' | 'cancelled',
+      vehicle_type: vehicle_type as string,
+      sortBy: sortBy as string,
+      page: page ? parseInt(page as string, 10) : undefined,
+      limit: limit ? parseInt(limit as string, 10) : undefined,
     });
 
     return res.status(200).json({

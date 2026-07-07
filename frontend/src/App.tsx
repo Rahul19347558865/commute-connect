@@ -4,7 +4,6 @@ import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute, Skeleton } from './components';
 
 // Lazy load page-level route components
-const Home = React.lazy(() => import('./pages/Home'));
 const Login = React.lazy(() => import('./pages/auth/Login'));
 const SignUp = React.lazy(() => import('./pages/auth/SignUp'));
 const ForgotPassword = React.lazy(() => import('./pages/auth/ForgotPassword'));
@@ -14,6 +13,8 @@ const PlaygroundPage = React.lazy(() => import('./pages/Playground').then(m => (
 const ProfilePage = React.lazy(() => import('./pages/Profile'));
 const EditProfilePage = React.lazy(() => import('./pages/EditProfile'));
 const CreateRidePage = React.lazy(() => import('./pages/rides/CreateRide'));
+const SearchRidesPage = React.lazy(() => import('./pages/rides/SearchRides'));
+const RideDetailsPage = React.lazy(() => import('./pages/rides/RideDetails'));
 
 /**
  * Reusable full-screen skeleton fallback loader for lazy-loaded page route loads.
@@ -39,7 +40,7 @@ export default function App() {
               path="/"
               element={
                 <ProtectedRoute>
-                  <Home />
+                  <SearchRidesPage />
                 </ProtectedRoute>
               }
             />
@@ -58,6 +59,24 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <EditProfilePage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/rides"
+              element={
+                <ProtectedRoute>
+                  <SearchRidesPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/rides/:id"
+              element={
+                <ProtectedRoute>
+                  <RideDetailsPage />
                 </ProtectedRoute>
               }
             />

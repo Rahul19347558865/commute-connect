@@ -21,6 +21,10 @@ export interface RideFilters {
   seats?: number;
   contribution_type?: string;
   status?: 'active' | 'completed' | 'cancelled';
+  vehicle_type?: string;
+  sortBy?: string;
+  page?: number;
+  limit?: number;
 }
 
 /**
@@ -53,10 +57,23 @@ export class RideService {
   static async listRides(filters: RideFilters) {
     let query = supabase
       .from('rides')
-      .select('*, driver:profiles(*, vehicle_information(*))')
-      .order('departure_time', { ascending: true });
+      .select('*, driver:profiles(*, vehicle_information(*))');
 
-    // Filter by status (default is active)
+    // 1. Vehicle Type Nested Table Filter (Sub-Query optimization)
+    if (filters.vehicle_type) {
+      const { data: vehicles } = await supabase
+        .from('vehicle_information')
+        .select('id')
+        .eq('vehicle_type', filters.vehicle_type);
+
+      const driverIds = (vehicles || []).map((v) => v.id);
+      query = query.in(
+        'driver_id',
+        driverIds.length > 0 ? driverIds : ['00000000-0000-0000-0000-000000000000']
+      );
+    }
+
+    // 2. Standard Filters
     query = query.eq('status', filters.status || 'active');
 
     if (filters.pickup) {
@@ -76,7 +93,6 @@ export class RideService {
     }
 
     if (filters.date) {
-      // Setup start and end boundary times for filtering the selected date
       const startOfDay = new Date(filters.date);
       startOfDay.setUTCHours(0, 0, 0, 0);
 
@@ -86,6 +102,30 @@ export class RideService {
       query = query
         .gte('departure_time', startOfDay.toISOString())
         .lte('departure_time', endOfDay.toISOString());
+    }
+
+    // 3. Dynamic Sorting Mappings
+    let sortColumn = 'departure_time';
+    let sortAscending = true;
+
+    if (filters.sortBy === 'latest_departure') {
+      sortColumn = 'departure_time';
+      sortAscending = false;
+    } else if (filters.sortBy === 'lowest_contribution') {
+      sortColumn = 'contribution_amount';
+      sortAscending = true;
+    } else if (filters.sortBy === 'newest') {
+      sortColumn = 'created_at';
+      sortAscending = false;
+    }
+
+    query = query.order(sortColumn, { ascending: sortAscending });
+
+    // 4. Pagination Ranges
+    if (filters.page && filters.limit) {
+      const from = (filters.page - 1) * filters.limit;
+      const to = from + filters.limit - 1;
+      query = query.range(from, to);
     }
 
     const { data, error } = await query;
