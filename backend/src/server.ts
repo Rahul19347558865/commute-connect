@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 import { authMiddleware, AuthenticatedRequest } from './middleware/auth.js';
 import authRoutes from './routes/authRoutes.js';
+import profileRoutes from './routes/profileRoutes.js';
 
 dotenv.config();
 
@@ -30,8 +31,9 @@ app.get('/api/health', (req: Request, res: Response) => {
   });
 });
 
-// Auth Routes mount
+// Auth & Profile Routes mount
 app.use('/api/auth', authRoutes);
+app.use('/api/profile', profileRoutes);
 
 // Protected Test Route to verify Supabase SDK Session verification
 app.get('/api/auth/test-auth', authMiddleware, (req: AuthenticatedRequest, res: Response) => {
