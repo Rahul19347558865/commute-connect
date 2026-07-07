@@ -13,6 +13,7 @@ const RegisterProfile = React.lazy(() => import('./pages/auth/RegisterProfile'))
 const PlaygroundPage = React.lazy(() => import('./pages/Playground').then(m => ({ default: m.Playground })));
 const ProfilePage = React.lazy(() => import('./pages/Profile'));
 const EditProfilePage = React.lazy(() => import('./pages/EditProfile'));
+const CreateRidePage = React.lazy(() => import('./pages/rides/CreateRide'));
 
 /**
  * Reusable full-screen skeleton fallback loader for lazy-loaded page route loads.
@@ -57,6 +58,15 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <EditProfilePage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/rides/create"
+              element={
+                <ProtectedRoute>
+                  <CreateRidePage />
                 </ProtectedRoute>
               }
             />

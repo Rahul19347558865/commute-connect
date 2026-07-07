@@ -41,6 +41,8 @@ import {
   Sparkles,
   ArrowRight,
   Filter,
+  Users,
+  IndianRupee,
 } from 'lucide-react';
 
 export {
@@ -86,4 +88,6 @@ export {
   Sparkles,
   ArrowRight,
   Filter,
+  Users,
+  IndianRupee,
 };
