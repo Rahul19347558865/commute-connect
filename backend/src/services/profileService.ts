@@ -65,11 +65,9 @@ export class ProfileService {
     vehicleData?: VehicleInfo
   ): Promise<ProfileWithVehicle> {
     // 1. Upsert profile table
-    const { data: profileRecord, error: profileError } = await supabase
+    const { error: profileError } = await supabase
       .from('profiles')
-      .upsert({ id, ...profileData }, { onConflict: 'id' })
-      .select()
-      .single();
+      .upsert({ id, ...profileData }, { onConflict: 'id' });
 
     if (profileError) {
       throw new Error(`Database error upserting profile: ${profileError.message}`);

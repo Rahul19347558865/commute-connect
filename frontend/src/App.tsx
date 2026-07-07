@@ -11,6 +11,8 @@ const ForgotPassword = React.lazy(() => import('./pages/auth/ForgotPassword'));
 const ResetPassword = React.lazy(() => import('./pages/auth/ResetPassword'));
 const RegisterProfile = React.lazy(() => import('./pages/auth/RegisterProfile'));
 const PlaygroundPage = React.lazy(() => import('./pages/Playground').then(m => ({ default: m.Playground })));
+const ProfilePage = React.lazy(() => import('./pages/Profile'));
+const EditProfilePage = React.lazy(() => import('./pages/EditProfile'));
 
 /**
  * Reusable full-screen skeleton fallback loader for lazy-loaded page route loads.
@@ -37,6 +39,24 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <Home />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <ProfilePage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/profile/edit"
+              element={
+                <ProtectedRoute>
+                  <EditProfilePage />
                 </ProtectedRoute>
               }
             />
