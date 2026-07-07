@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import { authMiddleware, AuthenticatedRequest } from './middleware/auth.js';
+import authRoutes from './routes/authRoutes.js';
 
 dotenv.config();
 
@@ -29,6 +30,9 @@ app.get('/api/health', (req: Request, res: Response) => {
   });
 });
 
+// Auth Routes mount
+app.use('/api/auth', authRoutes);
+
 // Protected Test Route to verify Supabase SDK Session verification
 app.get('/api/auth/test-auth', authMiddleware, (req: AuthenticatedRequest, res: Response) => {
   res.status(200).json({
@@ -39,7 +43,7 @@ app.get('/api/auth/test-auth', authMiddleware, (req: AuthenticatedRequest, res: 
 });
 
 // Centralized Error Handler Middleware
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+app.use((err: Error, req: Request, res: Response, _next: NextFunction) => {
   console.error('Unhandled Server Error:', err.message);
   res.status(500).json({
     success: false,

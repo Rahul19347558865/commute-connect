@@ -37,3 +37,5 @@ export * from './navigation/BottomNav';
 export * from './layouts/AppLayout';
 export * from './layouts/DashboardLayout';
 export * from './layouts/AuthLayout';
+
+export * from './ProtectedRoute';
