@@ -1,5 +1,4 @@
-import axios from 'axios';
-import { supabase } from './supabase';
+import { apiClient } from './apiClient';
 
 export interface UserProfile {
   id: string;
@@ -19,20 +18,6 @@ export interface UserProfile {
 const API_BASE = '/api/auth';
 
 /**
- * Helper to retrieve the current active Supabase session JWT token and configure headers.
- */
-async function getAuthHeaders() {
-  const { data: { session } } = await supabase.auth.getSession();
-  const token = session?.access_token;
-  return {
-    headers: {
-      Authorization: token ? `Bearer ${token}` : '',
-      'Content-Type': 'application/json',
-    },
-  };
-}
-
-/**
  * AuthService - Front-end service layer communicating with Supabase Auth and backend profile endpoints.
  */
 export class AuthService {
@@ -40,8 +25,7 @@ export class AuthService {
    * Syncs/registers user profile metadata in public database.
    */
   static async registerProfile(profileData: Omit<UserProfile, 'id' | 'email'>): Promise<UserProfile> {
-    const headers = await getAuthHeaders();
-    const response = await axios.post(`${API_BASE}/register`, profileData, headers);
+    const response = await apiClient.post(`${API_BASE}/register`, profileData);
     return response.data.data;
   }
 
@@ -49,8 +33,7 @@ export class AuthService {
    * Fetches active user database profile info.
    */
   static async getProfile(): Promise<UserProfile> {
-    const headers = await getAuthHeaders();
-    const response = await axios.get(`${API_BASE}/me`, headers);
+    const response = await apiClient.get(`${API_BASE}/me`);
     return response.data.data;
   }
 
