@@ -9,36 +9,45 @@ import {
   Radio,
   Switch,
   Divider,
-  Spinner,
   Card,
   CardHeader,
   CardTitle,
   CardDescription,
   CardContent,
-  CardFooter,
   Avatar,
   Badge,
-  Table,
-  TableHeader,
-  TableBody,
-  TableRow,
-  TableHead,
-  TableCell,
   Tabs,
   TabsList,
   TabsTrigger,
   TabsContent,
-  Pagination,
   Tooltip,
   Modal,
   SearchBar,
+  Skeleton,
+  EmptyState,
+  ErrorState,
+  NotFound,
+  Unauthorized,
+  DashboardLayout,
+  AuthLayout,
   Sparkles,
   ArrowRight,
   Info,
   CheckCircle,
 } from './components';
+import { useToast } from './hooks';
 
 export default function App() {
+  // Global Toast hook
+  const { toast } = useToast();
+
+  // Active view for master visual playground switcher
+  // 'playground' | 'dashboard-mock' | 'auth-mock' | 'feedback-states'
+  const [activeView, setActiveView] = useState<'playground' | 'dashboard-mock' | 'auth-mock' | 'feedback-states'>('playground');
+
+  // Dashboard state tracker
+  const [dashboardTab, setDashboardTab] = useState('home');
+
   // Form playground states
   const [inputText, setInputText] = useState('');
   const [inputError, setInputError] = useState('');
@@ -55,7 +64,6 @@ export default function App() {
   const [btnLoading, setBtnLoading] = useState(false);
 
   // Advanced components states
-  const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -73,6 +81,76 @@ export default function App() {
     }
   };
 
+  // Render Full Screen Auth Layout Mockup Mode
+  if (activeView === 'auth-mock') {
+    return (
+      <AuthLayout subtitle="Visual Validation of AuthLayout Frame">
+        <div className="space-y-4">
+          <Input label="Email address" placeholder="name@domain.com" type="email" />
+          <PasswordInput label="Password" placeholder="Enter credentials" />
+          <div className="flex items-center justify-between">
+            <Checkbox label="Remember me" />
+            <a href="#" className="text-tiny text-brand-primary hover:underline">Forgot password?</a>
+          </div>
+          <Button variant="primary" className="w-full" onClick={() => toast('success', 'Logged in (Demo Mode)')}>
+            Sign In
+          </Button>
+          <Divider className="my-2" />
+          <Button variant="secondary" className="w-full" onClick={() => setActiveView('playground')}>
+            Exit Auth Layout Preview
+          </Button>
+        </div>
+      </AuthLayout>
+    );
+  }
+
+  // Render Full Screen Dashboard Layout Mockup Mode
+  if (activeView === 'dashboard-mock') {
+    return (
+      <DashboardLayout activeTab={dashboardTab} onTabChange={setDashboardTab}>
+        {/* Floating return button to exit */}
+        <div className="mb-6 p-4 rounded-radius-md bg-brand-primary/10 border border-brand-primary/20 flex flex-wrap gap-4 items-center justify-between">
+          <div>
+            <h3 className="font-bold text-brand-primary">Dashboard Layout Active Preview</h3>
+            <p className="text-tiny text-neutral-textSub dark:text-slate-400">
+              Interactive Navbar, Sidebar tabs, and responsive BottomNav (mobile) are working.
+            </p>
+          </div>
+          <Button variant="primary" onClick={() => setActiveView('playground')}>
+            Exit Dashboard Preview
+          </Button>
+        </div>
+
+        {/* Dynamic subpanel content according to active tab */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="capitalize">{dashboardTab} Section Overview</CardTitle>
+            <CardDescription>Live simulated panel context loaded within the DashboardLayout container.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-small text-neutral-textMain dark:text-slate-300">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam elementum sodales purus, ut laoreet nibh cursus vel. Phasellus pretium rhoncus eros vitae eleifend.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded border border-neutral-borderLine">
+                <span className="text-[10px] text-neutral-textSub uppercase font-bold tracking-wider">Simulated Stat 1</span>
+                <p className="text-h2 font-bold text-brand-primary mt-1">4.9</p>
+              </div>
+              <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded border border-neutral-borderLine">
+                <span className="text-[10px] text-neutral-textSub uppercase font-bold tracking-wider">Simulated Stat 2</span>
+                <p className="text-h2 font-bold text-brand-success mt-1">24 Rides</p>
+              </div>
+              <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded border border-neutral-borderLine">
+                <span className="text-[10px] text-neutral-textSub uppercase font-bold tracking-wider">Simulated Stat 3</span>
+                <p className="text-h2 font-bold text-neutral-textMain dark:text-slate-100 mt-1">₹1,250</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </DashboardLayout>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-neutral-bg dark:bg-slate-950 transition-colors duration-theme-normal flex flex-col">
       {/* Premium Header Banners */}
@@ -86,7 +164,7 @@ export default function App() {
               Commute Connect Design Playground
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-radius-pill text-tiny font-medium bg-blue-50 text-brand-primary dark:bg-blue-900/30 dark:text-blue-400">
                 <Sparkles className="w-3.5 h-3.5" />
-                Step 3: Advanced UI
+                Final Design Foundation
               </span>
             </h1>
             <p className="text-tiny text-neutral-textSub dark:text-slate-400">
@@ -101,9 +179,50 @@ export default function App() {
         
         {/* Sidebar Navigation Documentation Index */}
         <aside className="md:col-span-1 space-y-4">
+          {/* Section Selector Links */}
           <div className="bg-neutral-surface dark:bg-slate-900 rounded-radius-lg p-5 border border-neutral-borderLine dark:border-slate-800 shadow-shadow-small">
             <h2 className="text-small font-bold uppercase tracking-wider text-neutral-textSub dark:text-slate-400 mb-3">
-              Design System Index
+              Playground Switcher
+            </h2>
+            <div className="flex flex-col gap-1.5">
+              <Button
+                variant={activeView === 'playground' ? 'primary' : 'ghost'}
+                size="sm"
+                className="justify-start h-9"
+                onClick={() => setActiveView('playground')}
+              >
+                Core & Advanced UI
+              </Button>
+              <Button
+                variant={activeView === 'feedback-states' ? 'primary' : 'ghost'}
+                size="sm"
+                className="justify-start h-9"
+                onClick={() => setActiveView('feedback-states')}
+              >
+                Feedback States
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="justify-start h-9"
+                onClick={() => setActiveView('dashboard-mock')}
+              >
+                Dashboard Layout
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="justify-start h-9"
+                onClick={() => setActiveView('auth-mock')}
+              >
+                Auth Layout
+              </Button>
+            </div>
+            
+            <Divider className="my-4" />
+
+            <h2 className="text-small font-bold uppercase tracking-wider text-neutral-textSub dark:text-slate-400 mb-3">
+              Documentation Index
             </h2>
             <nav className="space-y-1">
               <a href="#buttons" className="block text-small font-medium text-brand-primary hover:underline py-1.5 flex items-center gap-2">
@@ -117,9 +236,6 @@ export default function App() {
               </a>
               <a href="#advanced" className="block text-small font-medium text-brand-primary hover:underline py-1.5 flex items-center gap-2">
                 <ArrowRight className="w-3.5 h-3.5" /> Advanced UI
-              </a>
-              <a href="#loaders" className="block text-small font-medium text-brand-primary hover:underline py-1.5 flex items-center gap-2">
-                <ArrowRight className="w-3.5 h-3.5" /> Dividers & Spinners
               </a>
             </nav>
             
@@ -137,376 +253,343 @@ export default function App() {
         {/* Component Showcase Panel Canvas */}
         <section className="md:col-span-3 space-y-8">
           
-          {/* Section: Buttons */}
-          <div id="buttons" className="bg-neutral-surface dark:bg-slate-900 rounded-radius-lg p-6 border border-neutral-borderLine dark:border-slate-800 shadow-shadow-small space-y-6">
-            <div>
-              <h2 className="text-h3 font-bold text-neutral-textMain dark:text-slate-100">Button Component</h2>
-              <p className="text-small text-neutral-textSub dark:text-slate-400 mt-1">
-                Trigger actions via custom sizes, semantic variants, left/right icon mappings, and loading indicators.
-              </p>
-            </div>
-            
-            <Divider />
-
-            {/* Sub-section: Variants */}
-            <div className="space-y-3">
-              <h3 className="text-small font-bold text-neutral-textMain dark:text-slate-300">Semantic Design Variants</h3>
-              <div className="flex flex-wrap gap-3 items-center">
-                <Button variant="primary">Primary</Button>
-                <Button variant="secondary">Secondary</Button>
-                <Button variant="success">Success</Button>
-                <Button variant="danger">Danger</Button>
-                <Button variant="ghost">Ghost</Button>
-                <Button variant="link">Link Style</Button>
-              </div>
-            </div>
-
-            {/* Sub-section: Sizes */}
-            <div className="space-y-3">
-              <h3 className="text-small font-bold text-neutral-textMain dark:text-slate-300">Sizes</h3>
-              <div className="flex flex-wrap gap-3 items-center">
-                <Button variant="primary" size="sm">Small (sm)</Button>
-                <Button variant="primary" size="md">Medium (md)</Button>
-                <Button variant="primary" size="lg">Large (lg)</Button>
-              </div>
-            </div>
-
-            {/* Sub-section: Loading & Icons */}
-            <div className="space-y-3">
-              <h3 className="text-small font-bold text-neutral-textMain dark:text-slate-300">Interactive States & Icons</h3>
-              <div className="flex flex-wrap gap-4 items-center">
-                <Button variant="primary" loading={btnLoading} onClick={triggerLoading}>
-                  {btnLoading ? 'Loading...' : 'Click to Load'}
-                </Button>
-                <Button variant="secondary" disabled>Disabled State</Button>
-                <Button variant="primary" leftIcon={<CheckCircle className="w-4 h-4" />}>
-                  Left Icon
-                </Button>
-                <Button variant="secondary" rightIcon={<ArrowRight className="w-4 h-4" />}>
-                  Right Icon
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          {/* Section: Text Inputs */}
-          <div id="inputs" className="bg-neutral-surface dark:bg-slate-900 rounded-radius-lg p-6 border border-neutral-borderLine dark:border-slate-800 shadow-shadow-small space-y-6">
-            <div>
-              <h2 className="text-h3 font-bold text-neutral-textMain dark:text-slate-100">Form Input Controls</h2>
-              <p className="text-small text-neutral-textSub dark:text-slate-400 mt-1">
-                Data capturing elements with labeling, validation constraints, secure password masks, and custom heights.
-              </p>
-            </div>
-            
-            <Divider />
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <Input
-                label="Standard Text Input"
-                placeholder="Enter some text..."
-                value={inputText}
-                onChange={(e) => handleValidateInput(e.target.value)}
-                helperText="Character counter validation active (min 5 chars)."
-                error={inputError}
-              />
-
-              <PasswordInput
-                label="Password Input (Toggle Mask)"
-                placeholder="Enter your security password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                helperText="Click the eye icon to review key mask."
-              />
-
-              <Select
-                label="Dropdown Option Picker"
-                value={selectVal}
-                onChange={(e) => setSelectVal(e.target.value)}
-                helperText="Native dropdown overlays ensure tactile touchscreen focus."
-              >
-                <option value="">Choose an option...</option>
-                <option value="stu">Student Commuter</option>
-                <option value="emp">Office Employee</option>
-                <option value="oth">Other / Guest</option>
-              </Select>
-
-              <Textarea
-                label="Multiline Textarea"
-                placeholder="Write a brief profile description..."
-                value={textareaText}
-                onChange={(e) => setTextareaText(e.target.value)}
-                rows={3}
-              />
-            </div>
-
-            <div className="p-4 rounded-radius-md bg-slate-50 dark:bg-slate-800 border border-neutral-borderLine dark:border-slate-700 space-y-3">
-              <h3 className="text-tiny font-bold uppercase tracking-wider text-neutral-textSub dark:text-slate-400">
-                Disabled & Loading Inputs Showcase
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <Input label="Disabled Input" value="Cannot edit this" disabled />
-                <Input label="Loading Spinner Input" placeholder="Fetching query..." loading />
-              </div>
-            </div>
-          </div>
-
-          {/* Section: Toggles */}
-          <div id="toggles" className="bg-neutral-surface dark:bg-slate-900 rounded-radius-lg p-6 border border-neutral-borderLine dark:border-slate-800 shadow-shadow-small space-y-6">
-            <div>
-              <h2 className="text-h3 font-bold text-neutral-textMain dark:text-slate-100">Checkboxes, Radios & Switches</h2>
-              <p className="text-small text-neutral-textSub dark:text-slate-400 mt-1">
-                Tactile state toggle controls featuring custom checks, radio grouping selections, and translation switches.
-              </p>
-            </div>
-            
-            <Divider />
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              {/* Checkboxes */}
-              <div className="space-y-2">
-                <h3 className="text-small font-bold text-neutral-textMain dark:text-slate-300 mb-2">Checkboxes</h3>
-                <Checkbox
-                  label="Unchecked Box"
-                  checked={check1}
-                  onChange={(e) => setCheck1(e.target.checked)}
-                />
-                <Checkbox
-                  label="Checked Box"
-                  checked={check2}
-                  onChange={(e) => setCheck2(e.target.checked)}
-                />
-                <Checkbox
-                  label="Disabled Check"
-                  disabled
-                  checked={true}
-                />
-              </div>
-
-              {/* Radios */}
-              <div className="space-y-2">
-                <h3 className="text-small font-bold text-neutral-textMain dark:text-slate-300 mb-2">Radio Group Selection</h3>
-                <Radio
-                  name="demo-radio"
-                  label="Option One"
-                  value="one"
-                  checked={radioVal === 'one'}
-                  onChange={(e) => setRadioVal(e.target.value)}
-                />
-                <Radio
-                  name="demo-radio"
-                  label="Option Two"
-                  value="two"
-                  checked={radioVal === 'two'}
-                  onChange={(e) => setRadioVal(e.target.value)}
-                />
-                <Radio
-                  name="demo-radio"
-                  label="Disabled Option"
-                  disabled
-                  checked={false}
-                />
-              </div>
-
-              {/* Switches */}
-              <div className="space-y-2">
-                <h3 className="text-small font-bold text-neutral-textMain dark:text-slate-300 mb-2">Toggle Switches</h3>
-                <Switch
-                  label="Notifications"
-                  checked={switch1}
-                  onChange={(e) => setSwitch1(e.target.checked)}
-                />
-                <Switch
-                  label="Location Active"
-                  checked={switch2}
-                  onChange={(e) => setSwitch2(e.target.checked)}
-                />
-                <Switch
-                  label="Disabled Toggle"
-                  disabled
-                  checked={false}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Section: Advanced UI */}
-          <div id="advanced" className="bg-neutral-surface dark:bg-slate-900 rounded-radius-lg p-6 border border-neutral-borderLine dark:border-slate-800 shadow-shadow-small space-y-6">
-            <div>
-              <h2 className="text-h3 font-bold text-neutral-textMain dark:text-slate-100">Advanced Composable UI Components</h2>
-              <p className="text-small text-neutral-textSub dark:text-slate-400 mt-1">
-                Compound Cards, Avatar fallbacks, Badge labels, responsive Tables, Tabs switcher layouts, Tooltips, and Modals.
-              </p>
-            </div>
-            
-            <Divider />
-
-            {/* Sub-section: Badges & Avatars & SearchBar */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div className="space-y-3">
-                <h3 className="text-small font-bold text-neutral-textMain dark:text-slate-300">Badges & Avatars</h3>
-                <div className="flex flex-wrap items-center gap-3">
-                  <Badge variant="default">Default</Badge>
-                  <Badge variant="primary">Primary</Badge>
-                  <Badge variant="success">Success</Badge>
-                  <Badge variant="warning">Warning</Badge>
-                  <Badge variant="danger">Danger</Badge>
+          {activeView === 'playground' ? (
+            <>
+              {/* Section: Toast Notification Spawner */}
+              <div className="bg-neutral-surface dark:bg-slate-900 rounded-radius-lg p-6 border border-neutral-borderLine dark:border-slate-800 shadow-shadow-small space-y-6">
+                <div>
+                  <h2 className="text-h3 font-bold text-neutral-textMain dark:text-slate-100">Toast Notifications</h2>
+                  <p className="text-small text-neutral-textSub dark:text-slate-400 mt-1">
+                    Spawn floating visual notifications of multiple semantic types. Auto-dismisses in 4 seconds.
+                  </p>
                 </div>
-                <div className="flex items-center gap-4 pt-2">
-                  <Avatar fallback="JD" size="sm" alt="John Doe" />
-                  <Avatar fallback="JD" size="md" alt="John Doe" />
-                  <Avatar fallback="JD" size="lg" alt="John Doe" />
-                  <Tooltip content="Hovering triggers a description tooltip box!" position="right">
-                    <span className="text-small text-brand-primary underline cursor-help">Hover over me</span>
-                  </Tooltip>
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <h3 className="text-small font-bold text-neutral-textMain dark:text-slate-300">Search Bar & Modal Triggers</h3>
-                <SearchBar
-                  placeholder="Type search queries here..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onClear={() => setSearchQuery('')}
-                />
-                <div className="pt-2">
-                  <Button variant="primary" onClick={() => setIsModalOpen(true)}>
-                    Trigger Interactive Modal
+                <Divider />
+                <div className="flex flex-wrap gap-3 items-center">
+                  <Button variant="success" onClick={() => toast('success', 'Logged in successfully!')}>
+                    Success Toast
+                  </Button>
+                  <Button variant="primary" onClick={() => toast('info', 'Your route search matching query is running.')}>
+                    Info Toast
+                  </Button>
+                  <Button variant="secondary" onClick={() => toast('warning', 'Session token expires soon.')}>
+                    Warning Toast
+                  </Button>
+                  <Button variant="danger" onClick={() => toast('error', 'Failed to connect to backend server.')}>
+                    Error Toast
                   </Button>
                 </div>
               </div>
-            </div>
 
-            {/* Sub-section: Tabs */}
-            <div className="space-y-3">
-              <h3 className="text-small font-bold text-neutral-textMain dark:text-slate-300">Tabs Compound Layout</h3>
-              <Tabs defaultValue="overview">
-                <TabsList>
-                  <TabsTrigger value="overview">Overview</TabsTrigger>
-                  <TabsTrigger value="details">Details Panel</TabsTrigger>
-                </TabsList>
-                <TabsContent value="overview" className="p-4 bg-slate-50 dark:bg-slate-800 rounded-radius-md border border-neutral-borderLine dark:border-slate-700">
-                  <p className="text-small text-neutral-textMain dark:text-slate-300">
-                    This is the Overview tab panel. Nested composability manages focus states.
+              {/* Section: Buttons */}
+              <div id="buttons" className="bg-neutral-surface dark:bg-slate-900 rounded-radius-lg p-6 border border-neutral-borderLine dark:border-slate-800 shadow-shadow-small space-y-6">
+                <div>
+                  <h2 className="text-h3 font-bold text-neutral-textMain dark:text-slate-100">Button Component</h2>
+                  <p className="text-small text-neutral-textSub dark:text-slate-400 mt-1">
+                    Trigger actions via custom sizes, semantic variants, left/right icon mappings, and loading indicators.
                   </p>
-                </TabsContent>
-                <TabsContent value="details" className="p-4 bg-slate-50 dark:bg-slate-800 rounded-radius-md border border-neutral-borderLine dark:border-slate-700">
-                  <p className="text-small text-neutral-textMain dark:text-slate-300">
-                    This is the Details tab panel. Switch states have zero local react-state wiring.
-                  </p>
-                </TabsContent>
-              </Tabs>
-            </div>
+                </div>
+                
+                <Divider />
 
-            {/* Sub-section: Composable Card */}
-            <div className="space-y-3">
-              <h3 className="text-small font-bold text-neutral-textMain dark:text-slate-300">Composable Card</h3>
-              <Card>
-                <CardHeader>
-                  <CardTitle>Design System Compound Card</CardTitle>
-                  <CardDescription>
-                    Composable architectures allow nesting elements like headers, descriptions, footers, and content.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-small text-neutral-textMain dark:text-slate-300">
-                    This is card body content rendered within a CardContent wrapper, which implements normalized padding.
-                  </p>
-                </CardContent>
-                <CardFooter>
-                  <Button variant="ghost">Cancel</Button>
-                  <Button variant="primary">Confirm Action</Button>
-                </CardFooter>
-              </Card>
-            </div>
-
-            {/* Sub-section: Tables & Pagination */}
-            <div className="space-y-3">
-              <h3 className="text-small font-bold text-neutral-textMain dark:text-slate-300">Responsive Composable Tables & Pagination</h3>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>User Name</TableHead>
-                    <TableHead>Role</TableHead>
-                    <TableHead>Route Status</TableHead>
-                    <TableHead className="text-right">Contribution</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  <TableRow>
-                    <TableCell className="font-medium">Rahul Sharma</TableCell>
-                    <TableCell>Driver</TableCell>
-                    <TableCell>
-                      <Badge variant="success">Active</Badge>
-                    </TableCell>
-                    <TableCell className="text-right">Paid (₹50)</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className="font-medium">Anya Gupta</TableCell>
-                    <TableCell>Passenger</TableCell>
-                    <TableCell>
-                      <Badge variant="primary">Pending</Badge>
-                    </TableCell>
-                    <TableCell className="text-right">Free</TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-              <Pagination
-                currentPage={currentPage}
-                totalPages={5}
-                onPageChange={(p) => setCurrentPage(p)}
-              />
-            </div>
-          </div>
-
-          {/* Section: Loaders */}
-          <div id="loaders" className="bg-neutral-surface dark:bg-slate-900 rounded-radius-lg p-6 border border-neutral-borderLine dark:border-slate-800 shadow-shadow-small space-y-6">
-            <div>
-              <h2 className="text-h3 font-bold text-neutral-textMain dark:text-slate-100">Dividers & Spinners</h2>
-              <p className="text-small text-neutral-textSub dark:text-slate-400 mt-1">
-                Visual separation rules and circular progress spin indicators for async interfaces.
-              </p>
-            </div>
-            
-            <Divider />
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {/* Spinner sizes */}
-              <div className="space-y-3">
-                <h3 className="text-small font-bold text-neutral-textMain dark:text-slate-300">Spinner Sizes</h3>
-                <div className="flex gap-6 items-center">
-                  <div className="flex flex-col items-center gap-1">
-                    <Spinner size="sm" />
-                    <span className="text-[10px] text-neutral-textSub">Small</span>
+                {/* Sub-section: Variants */}
+                <div className="space-y-3">
+                  <h3 className="text-small font-bold text-neutral-textMain dark:text-slate-300">Semantic Design Variants</h3>
+                  <div className="flex flex-wrap gap-3 items-center">
+                    <Button variant="primary">Primary</Button>
+                    <Button variant="secondary">Secondary</Button>
+                    <Button variant="success">Success</Button>
+                    <Button variant="danger">Danger</Button>
+                    <Button variant="ghost">Ghost</Button>
+                    <Button variant="link">Link Style</Button>
                   </div>
-                  <div className="flex flex-col items-center gap-1">
-                    <Spinner size="md" />
-                    <span className="text-[10px] text-neutral-textSub">Medium</span>
+                </div>
+
+                {/* Sub-section: Sizes */}
+                <div className="space-y-3">
+                  <h3 className="text-small font-bold text-neutral-textMain dark:text-slate-300">Sizes</h3>
+                  <div className="flex flex-wrap gap-3 items-center">
+                    <Button variant="primary" size="sm">Small (sm)</Button>
+                    <Button variant="primary" size="md">Medium (md)</Button>
+                    <Button variant="primary" size="lg">Large (lg)</Button>
                   </div>
-                  <div className="flex flex-col items-center gap-1">
-                    <Spinner size="lg" />
-                    <span className="text-[10px] text-neutral-textSub">Large</span>
+                </div>
+
+                {/* Sub-section: Loading & Icons */}
+                <div className="space-y-3">
+                  <h3 className="text-small font-bold text-neutral-textMain dark:text-slate-300">Interactive States & Icons</h3>
+                  <div className="flex flex-wrap gap-4 items-center">
+                    <Button variant="primary" loading={btnLoading} onClick={triggerLoading}>
+                      {btnLoading ? 'Loading...' : 'Click to Load'}
+                    </Button>
+                    <Button variant="secondary" disabled>Disabled State</Button>
+                    <Button variant="primary" leftIcon={<CheckCircle className="w-4 h-4" />}>
+                      Left Icon
+                    </Button>
+                    <Button variant="secondary" rightIcon={<ArrowRight className="w-4 h-4" />}>
+                      Right Icon
+                    </Button>
                   </div>
                 </div>
               </div>
 
-              {/* Divider types */}
-              <div className="space-y-3">
-                <h3 className="text-small font-bold text-neutral-textMain dark:text-slate-300">Divider Orientation</h3>
-                <div className="space-y-4">
-                  <div>
-                    <span className="text-[11px] text-neutral-textSub block mb-1">Horizontal separator</span>
-                    <Divider />
+              {/* Section: Text Inputs */}
+              <div id="inputs" className="bg-neutral-surface dark:bg-slate-900 rounded-radius-lg p-6 border border-neutral-borderLine dark:border-slate-800 shadow-shadow-small space-y-6">
+                <div>
+                  <h2 className="text-h3 font-bold text-neutral-textMain dark:text-slate-100">Form Input Controls</h2>
+                  <p className="text-small text-neutral-textSub dark:text-slate-400 mt-1">
+                    Data capturing elements with labeling, validation constraints, secure password masks, and custom heights.
+                  </p>
+                </div>
+                
+                <Divider />
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <Input
+                    label="Standard Text Input"
+                    placeholder="Enter some text..."
+                    value={inputText}
+                    onChange={(e) => handleValidateInput(e.target.value)}
+                    helperText="Character counter validation active (min 5 chars)."
+                    error={inputError}
+                  />
+
+                  <PasswordInput
+                    label="Password Input (Toggle Mask)"
+                    placeholder="Enter your security password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    helperText="Click the eye icon to review key mask."
+                  />
+
+                  <Select
+                    label="Dropdown Option Picker"
+                    value={selectVal}
+                    onChange={(e) => setSelectVal(e.target.value)}
+                    helperText="Native dropdown overlays ensure tactile touchscreen focus."
+                  >
+                    <option value="">Choose an option...</option>
+                    <option value="stu">Student Commuter</option>
+                    <option value="emp">Office Employee</option>
+                    <option value="oth">Other / Guest</option>
+                  </Select>
+
+                  <Textarea
+                    label="Multiline Textarea"
+                    placeholder="Write a brief profile description..."
+                    value={textareaText}
+                    onChange={(e) => setTextareaText(e.target.value)}
+                    rows={3}
+                  />
+                </div>
+              </div>
+
+              {/* Section: Toggles */}
+              <div id="toggles" className="bg-neutral-surface dark:bg-slate-900 rounded-radius-lg p-6 border border-neutral-borderLine dark:border-slate-800 shadow-shadow-small space-y-6">
+                <div>
+                  <h2 className="text-h3 font-bold text-neutral-textMain dark:text-slate-100">Checkboxes, Radios & Switches</h2>
+                  <p className="text-small text-neutral-textSub dark:text-slate-400 mt-1">
+                    Tactile state toggle controls featuring custom checks, radio grouping selections, and translation switches.
+                  </p>
+                </div>
+                
+                <Divider />
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                  <div className="space-y-2">
+                    <h3 className="text-small font-bold text-neutral-textMain dark:text-slate-300 mb-2">Checkboxes</h3>
+                    <Checkbox
+                      label="Unchecked Box"
+                      checked={check1}
+                      onChange={(e) => setCheck1(e.target.checked)}
+                    />
+                    <Checkbox
+                      label="Checked Box"
+                      checked={check2}
+                      onChange={(e) => setCheck2(e.target.checked)}
+                    />
                   </div>
-                  <div className="flex items-center gap-4 h-12">
-                    <span className="text-[11px] text-neutral-textSub">Left Element</span>
-                    <Divider orientation="vertical" />
-                    <span className="text-[11px] text-neutral-textSub">Right Element</span>
+
+                  <div className="space-y-2">
+                    <h3 className="text-small font-bold text-neutral-textMain dark:text-slate-300 mb-2">Radio Group Selection</h3>
+                    <Radio
+                      name="demo-radio"
+                      label="Option One"
+                      value="one"
+                      checked={radioVal === 'one'}
+                      onChange={(e) => setRadioVal(e.target.value)}
+                    />
+                    <Radio
+                      name="demo-radio"
+                      label="Option Two"
+                      value="two"
+                      checked={radioVal === 'two'}
+                      onChange={(e) => setRadioVal(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <h3 className="text-small font-bold text-neutral-textMain dark:text-slate-300 mb-2">Toggle Switches</h3>
+                    <Switch
+                      label="Notifications"
+                      checked={switch1}
+                      onChange={(e) => setSwitch1(e.target.checked)}
+                    />
+                    <Switch
+                      label="Location Active"
+                      checked={switch2}
+                      onChange={(e) => setSwitch2(e.target.checked)}
+                    />
                   </div>
                 </div>
               </div>
+
+              {/* Section: Advanced UI */}
+              <div id="advanced" className="bg-neutral-surface dark:bg-slate-900 rounded-radius-lg p-6 border border-neutral-borderLine dark:border-slate-800 shadow-shadow-small space-y-6">
+                <div>
+                  <h2 className="text-h3 font-bold text-neutral-textMain dark:text-slate-100">Advanced Composable UI Components</h2>
+                  <p className="text-small text-neutral-textSub dark:text-slate-400 mt-1">
+                    Compound Cards, Avatar fallbacks, Badge labels, responsive Tables, Tabs switcher layouts, Tooltips, and Modals.
+                  </p>
+                </div>
+                
+                <Divider />
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="space-y-3">
+                    <h3 className="text-small font-bold text-neutral-textMain dark:text-slate-300">Badges & Avatars</h3>
+                    <div className="flex flex-wrap items-center gap-3">
+                      <Badge variant="default">Default</Badge>
+                      <Badge variant="primary">Primary</Badge>
+                      <Badge variant="success">Success</Badge>
+                      <Badge variant="warning">Warning</Badge>
+                      <Badge variant="danger">Danger</Badge>
+                    </div>
+                    <div className="flex items-center gap-4 pt-2">
+                      <Avatar fallback="JD" size="sm" alt="John Doe" />
+                      <Avatar fallback="JD" size="md" alt="John Doe" />
+                      <Avatar fallback="JD" size="lg" alt="John Doe" />
+                      <Tooltip content="Hovering triggers a description tooltip box!" position="right">
+                        <span className="text-small text-brand-primary underline cursor-help">Hover over me</span>
+                      </Tooltip>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <h3 className="text-small font-bold text-neutral-textMain dark:text-slate-300">Search Bar & Modal Triggers</h3>
+                    <SearchBar
+                      placeholder="Type search queries here..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onClear={() => setSearchQuery('')}
+                    />
+                    <div className="pt-2">
+                      <Button variant="primary" onClick={() => setIsModalOpen(true)}>
+                        Trigger Interactive Modal
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <h3 className="text-small font-bold text-neutral-textMain dark:text-slate-300">Tabs Compound Layout</h3>
+                  <Tabs defaultValue="overview">
+                    <TabsList>
+                      <TabsTrigger value="overview">Overview</TabsTrigger>
+                      <TabsTrigger value="details">Details Panel</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="overview" className="p-4 bg-slate-50 dark:bg-slate-800 rounded-radius-md border border-neutral-borderLine dark:border-slate-700">
+                      <p className="text-small text-neutral-textMain dark:text-slate-300">
+                        This is the Overview tab panel. Nested composability manages focus states.
+                      </p>
+                    </TabsContent>
+                    <TabsContent value="details" className="p-4 bg-slate-50 dark:bg-slate-800 rounded-radius-md border border-neutral-borderLine dark:border-slate-700">
+                      <p className="text-small text-neutral-textMain dark:text-slate-300">
+                        This is the Details tab panel. Switch states have zero local react-state wiring.
+                      </p>
+                    </TabsContent>
+                  </Tabs>
+                </div>
+              </div>
+            </>
+          ) : (
+            /* Section: Feedback States */
+            <div className="space-y-8 animate-fade-in">
+              <div className="bg-neutral-surface dark:bg-slate-900 rounded-radius-lg p-6 border border-neutral-borderLine dark:border-slate-800 shadow-shadow-small space-y-6">
+                <div>
+                  <h2 className="text-h3 font-bold text-neutral-textMain dark:text-slate-100">Skeleton Loading Placeholders</h2>
+                  <p className="text-small text-neutral-textSub dark:text-slate-400 mt-1">
+                    Visual loading pulse markers representing text lines, images, or block panels.
+                  </p>
+                </div>
+                <Divider />
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <Skeleton variant="circle" width="40px" height="40px" />
+                    <div className="flex-1 space-y-1.5">
+                      <Skeleton variant="text" width="40%" />
+                      <Skeleton variant="text" width="60%" />
+                    </div>
+                  </div>
+                  <Skeleton variant="rect" height="100px" />
+                </div>
+              </div>
+
+              {/* EmptyState, ErrorState, NotFound, Unauthorized block layouts */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>EmptyState Card</CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-2">
+                    <EmptyState
+                      title="No Trips Scheduled"
+                      description="You haven't booked or offered any rides for this week yet."
+                      action={<Button variant="primary" size="sm">Offer Ride Now</Button>}
+                    />
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>ErrorState Card</CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-2">
+                    <ErrorState
+                      title="Failed to Sync Logs"
+                      message="A database connection timeout error occurred. Please retry your synchronization."
+                      onRetry={() => toast('info', 'Retrying connection sync...')}
+                    />
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>404 Page (NotFound)</CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-2">
+                    <NotFound
+                      title="Route Not Available"
+                      message="The ride coordinate token has expired or was deleted by the administrator."
+                      action={<Button variant="secondary" size="sm" onClick={() => toast('warning', 'Simulated exit home!')}>Go Back</Button>}
+                    />
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Unauthorized Card</CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-2">
+                    <Unauthorized
+                      title="Admin Access Required"
+                      message="Your account profile must hold administrator rights to review global analytics data."
+                      action={<Button variant="primary" size="sm" onClick={() => toast('error', 'Requires authorization!')}>Request Access</Button>}
+                    />
+                  </CardContent>
+                </Card>
+              </div>
             </div>
-          </div>
+          )}
 
         </section>
       </main>
