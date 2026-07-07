@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import { authMiddleware, AuthenticatedRequest } from './middleware/auth.js';
 import authRoutes from './routes/authRoutes.js';
 import profileRoutes from './routes/profileRoutes.js';
+import rideRoutes from './routes/rideRoutes.js';
 
 dotenv.config();
 
@@ -31,9 +32,10 @@ app.get('/api/health', (req: Request, res: Response) => {
   });
 });
 
-// Auth & Profile Routes mount
+// Auth, Profile & Ride Routes mount
 app.use('/api/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api/rides', rideRoutes);
 
 // Protected Test Route to verify Supabase SDK Session verification
 app.get('/api/auth/test-auth', authMiddleware, (req: AuthenticatedRequest, res: Response) => {
