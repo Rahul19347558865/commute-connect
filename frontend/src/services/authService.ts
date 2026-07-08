@@ -12,6 +12,13 @@ export interface UserProfile {
   vehicle_number?: string;
   rating?: number;
   reviews_count?: number;
+  gender?: string;
+  contact_number?: string;
+  emergency_contact?: string;
+  preferred_pickup_area?: string;
+  preferred_drop_area?: string;
+  travel_preferences?: string;
+  vehicle_information?: any;
 }
 
 // Vite proxy resolves '/api' queries to http://localhost:5000/api

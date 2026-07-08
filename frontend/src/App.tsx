@@ -11,10 +11,18 @@ const ResetPassword = React.lazy(() => import('./pages/auth/ResetPassword'));
 const RegisterProfile = React.lazy(() => import('./pages/auth/RegisterProfile'));
 const PlaygroundPage = React.lazy(() => import('./pages/Playground').then(m => ({ default: m.Playground })));
 const ProfilePage = React.lazy(() => import('./pages/Profile'));
-const EditProfilePage = React.lazy(() => import('./pages/EditProfile'));
+const SettingsPage = React.lazy(() => import('./pages/Settings'));
 const CreateRidePage = React.lazy(() => import('./pages/rides/CreateRide'));
 const SearchRidesPage = React.lazy(() => import('./pages/rides/SearchRides'));
+const DashboardPage = React.lazy(() => import('./pages/Dashboard'));
+const RideHistoryPage = React.lazy(() => import('./pages/rides/RideHistory'));
 const RideDetailsPage = React.lazy(() => import('./pages/rides/RideDetails'));
+const BookingsHistoryPage = React.lazy(() => import('./pages/rides/BookingsHistory'));
+const ChatList = React.lazy(() => import('./pages/chat/ChatList'));
+const ChatPage = React.lazy(() => import('./pages/chat/ChatPage'));
+const NotificationPage = React.lazy(() => import('./pages/notifications/NotificationPage'));
+const RideMapPage = React.lazy(() => import('./pages/rides/RideMap'));
+const AdminDashboardPage = React.lazy(() => import('./pages/admin/AdminDashboard'));
 
 /**
  * Reusable full-screen skeleton fallback loader for lazy-loaded page route loads.
@@ -40,7 +48,7 @@ export default function App() {
               path="/"
               element={
                 <ProtectedRoute>
-                  <SearchRidesPage />
+                  <DashboardPage />
                 </ProtectedRoute>
               }
             />
@@ -55,10 +63,10 @@ export default function App() {
             />
 
             <Route
-              path="/profile/edit"
+              path="/settings"
               element={
                 <ProtectedRoute>
-                  <EditProfilePage />
+                  <SettingsPage />
                 </ProtectedRoute>
               }
             />
@@ -82,10 +90,73 @@ export default function App() {
             />
 
             <Route
+              path="/bookings"
+              element={
+                <ProtectedRoute>
+                  <BookingsHistoryPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/history"
+              element={
+                <ProtectedRoute>
+                  <RideHistoryPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/chat"
+              element={
+                <ProtectedRoute>
+                  <ChatList />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/chat/:rideId"
+              element={
+                <ProtectedRoute>
+                  <ChatPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/notifications"
+              element={
+                <ProtectedRoute>
+                  <NotificationPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/rides/:rideId/track"
+              element={
+                <ProtectedRoute>
+                  <RideMapPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
               path="/rides/create"
               element={
                 <ProtectedRoute>
                   <CreateRidePage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute>
+                  <AdminDashboardPage />
                 </ProtectedRoute>
               }
             />

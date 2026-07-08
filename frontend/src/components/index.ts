@@ -20,6 +20,7 @@ export * from './ui/Pagination';
 export * from './ui/Tooltip';
 export * from './ui/Modal';
 export * from './ui/SearchBar';
+export * from './ui/SEO';
 
 // Feedback States
 export * from './feedback/Skeleton';
@@ -32,6 +33,7 @@ export * from './feedback/Unauthorized';
 export * from './navigation/Navbar';
 export * from './navigation/Sidebar';
 export * from './navigation/BottomNav';
+export * from './navigation/Footer';
 
 // Layouts
 export * from './layouts/AppLayout';

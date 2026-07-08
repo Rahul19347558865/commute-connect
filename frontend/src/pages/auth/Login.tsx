@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../hooks/useToast';
-import { Button, Input, PasswordInput, AuthLayout } from '../../components';
+import { Button, Input, PasswordInput, AuthLayout, SEO } from '../../components';
 
 const loginSchema = z.object({
   email: z.string().min(1, 'Email is required').email('Invalid email address'),
@@ -49,6 +49,10 @@ export const Login: React.FC = () => {
 
   return (
     <AuthLayout subtitle="Welcome back to Commute Connect">
+      <SEO
+        title="Sign In"
+        description="Sign in to your Commute Connect account to find active carpools, match with riders, and review fuel-sharing bookings."
+      />
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <Input
           label="Email Address"

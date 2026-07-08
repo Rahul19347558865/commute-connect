@@ -1,7 +1,8 @@
 import React from 'react';
-import { Home, Search, Calendar, MessageSquare, User, Settings, LogOut, X } from '../icons';
+import { Home, Search, Car, Calendar, MessageSquare, User, Settings, LogOut, X } from '../icons';
 import { Button } from '../ui/Button';
 import { Divider } from '../ui/Divider';
+import { useAuth } from '../../context/AuthContext';
 
 export interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Governs slide-out menu visibility on mobile/tablet viewports */
@@ -20,13 +21,16 @@ export interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
  */
 export const Sidebar = React.forwardRef<HTMLDivElement, SidebarProps>(
   ({ className = '', isOpen, onClose, activeTab, onTabChange, ...props }, ref) => {
+    const { logout } = useAuth();
+    
     const navItems = [
-      { id: 'home', label: 'Home Dashboard', icon: <Home className="w-4 h-4" /> },
+      { id: 'home', label: 'Dashboard', icon: <Home className="w-4 h-4" /> },
       { id: 'routes', label: 'Find Rides', icon: <Search className="w-4 h-4" /> },
+      { id: 'offer', label: 'Offer Ride', icon: <Car className="w-4 h-4" /> },
       { id: 'bookings', label: 'My Bookings', icon: <Calendar className="w-4 h-4" /> },
-      { id: 'messages', label: 'Chat Messages', icon: <MessageSquare className="w-4 h-4" /> },
-      { id: 'profile', label: 'Profile Account', icon: <User className="w-4 h-4" /> },
-      { id: 'settings', label: 'System Settings', icon: <Settings className="w-4 h-4" /> },
+      { id: 'messages', label: 'Messages', icon: <MessageSquare className="w-4 h-4" /> },
+      { id: 'profile', label: 'Profile', icon: <User className="w-4 h-4" /> },
+      { id: 'settings', label: 'Settings', icon: <Settings className="w-4 h-4" /> },
     ];
 
     const handleTabClick = (tabId: string) => {
@@ -85,7 +89,13 @@ export const Sidebar = React.forwardRef<HTMLDivElement, SidebarProps>(
         <div className="p-4 shrink-0">
           <Divider className="mb-4" />
           <button
-            onClick={() => alert('Logging out!')}
+            onClick={async () => {
+              try {
+                await logout();
+              } catch (err) {
+                console.error('Logout error:', err);
+              }
+            }}
             className="w-full flex items-center gap-3 px-3 py-2.5 text-small font-medium text-brand-error hover:bg-red-50 dark:hover:bg-red-950/20 rounded-radius-md outline-none transition-colors duration-theme-fast cursor-pointer select-none"
           >
             <LogOut className="w-4 h-4 shrink-0" />

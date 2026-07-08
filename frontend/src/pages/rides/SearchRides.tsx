@@ -4,7 +4,7 @@ import { useSearchRides } from '../../hooks/useRides';
 import { DashboardLayout } from '../../components/layouts/DashboardLayout';
 import { RideFilters, FilterState } from '../../components/rides/RideFilters';
 import { RideCard } from '../../components/rides/RideCard';
-import { Button, Skeleton, EmptyState, ErrorState } from '../../components';
+import { Button, Skeleton, EmptyState, ErrorState, SEO } from '../../components';
 import { Plus } from '../../components/icons';
 
 /**
@@ -33,6 +33,10 @@ export const SearchRidesPage: React.FC = () => {
 
   return (
     <DashboardLayout activeTab="find-ride">
+      <SEO
+        title="Find Ride Pools"
+        description="Search daily carpool offerings and matching passenger routes on Commute Connect."
+      />
       <div className="space-y-6 animate-fade-in">
         {/* Header Action Jumbotron Banner */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

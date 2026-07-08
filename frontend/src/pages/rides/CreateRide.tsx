@@ -5,7 +5,7 @@ import { useCreateRide } from '../../hooks/useRides';
 import { useToast } from '../../hooks/useToast';
 import { DashboardLayout } from '../../components/layouts/DashboardLayout';
 import { RideForm, RideFormValues } from '../../components/rides/RideForm';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, Skeleton, Unauthorized, Button } from '../../components';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, Skeleton, Unauthorized, Button, SEO } from '../../components';
 
 /**
  * CreateRidePage - View enabling drivers to publish commute pools.
@@ -60,8 +60,10 @@ export const CreateRidePage: React.FC = () => {
     );
   }
 
-  // Enforce Driver Role Gate Checks
+  // Enforce Driver Role and Vehicle Presence Gate Checks
   const isDriver = profile?.role === 'driver' || profile?.role === 'both';
+  const hasVehicle = !!profile?.vehicle_information;
+
   if (!isDriver) {
     return (
       <DashboardLayout activeTab="offer-ride">
@@ -69,8 +71,24 @@ export const CreateRidePage: React.FC = () => {
           title="Driver Account Required"
           message="Only users registered under a driver role are permitted to offer rides. Please update your profile preferences."
           action={
-            <Button variant="primary" size="sm" onClick={() => navigate('/profile/edit')}>
+            <Button variant="primary" size="sm" onClick={() => navigate('/profile')}>
               Update Profile Role
+            </Button>
+          }
+        />
+      </DashboardLayout>
+    );
+  }
+
+  if (!hasVehicle) {
+    return (
+      <DashboardLayout activeTab="offer-ride">
+        <Unauthorized
+          title="Vehicle Information Required"
+          message="You must configure your vehicle details in your Profile before publishing ride offerings. This lets passengers match and identify your vehicle."
+          action={
+            <Button variant="primary" size="sm" onClick={() => navigate('/profile')}>
+              Configure Vehicle Details
             </Button>
           }
         />
@@ -80,6 +98,10 @@ export const CreateRidePage: React.FC = () => {
 
   return (
     <DashboardLayout activeTab="offer-ride">
+      <SEO
+        title="Offer a Ride"
+        description="Publish your regular commute routes, timing, and pricing details to share fuel costs on Commute Connect."
+      />
       <Card className="max-w-5xl mx-auto">
         <CardHeader>
           <CardTitle>Offer a Ride</CardTitle>

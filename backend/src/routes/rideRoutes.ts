@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { authMiddleware, AuthenticatedRequest } from '../middleware/auth.js';
 import { RideService } from '../services/rideService.js';
 import { ProfileService } from '../services/profileService.js';
+import { BookingService } from '../services/bookingService.js';
 
 const router = Router();
 
@@ -122,6 +123,29 @@ router.get('/', async (req, res) => {
 });
 
 /**
+ * @route   GET /api/rides/requests/passenger
+ * @desc    Retrieves passenger's request/booking history.
+ */
+router.get('/requests/passenger', authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
+  const { id: passengerId } = req.user!;
+
+  try {
+    const history = await BookingService.getUserRequests(passengerId);
+    return res.status(200).json({
+      success: true,
+      data: history,
+    });
+  } catch (error: any) {
+    console.error('Fetch passenger history error:', error.message);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to retrieve bookings history.',
+      error: error.message,
+    });
+  }
+});
+
+/**
  * @route   GET /api/rides/:id
  * @desc    Fetches single ride by ID.
  */
@@ -220,6 +244,119 @@ router.delete('/:id', authMiddleware, async (req: AuthenticatedRequest, res: Res
     return res.status(isAccessDenied ? 403 : 500).json({
       success: false,
       message: error.message || 'Failed to delete ride offering.',
+    });
+  }
+});
+
+// ==========================================
+// BOOKING REQUESTS ENDPOINTS
+// ==========================================
+
+/**
+ * @route   POST /api/rides/:id/request
+ * @desc    Submit booking request on a ride.
+ */
+router.post('/:id/request', authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
+  const { id: rideId } = req.params;
+  const { id: passengerId } = req.user!;
+
+  try {
+    const request = await BookingService.createRequest(rideId, passengerId);
+    return res.status(201).json({
+      success: true,
+      message: 'Booking request submitted successfully.',
+      data: request,
+    });
+  } catch (error: any) {
+    console.error('Create request error:', error.message);
+    const isDeny = error.message.includes('Access denied') || error.message.includes('failed') || error.message.includes('remaining');
+    return res.status(isDeny ? 400 : 500).json({
+      success: false,
+      message: error.message || 'Failed to submit booking request.',
+    });
+  }
+});
+
+/**
+ * @route   GET /api/rides/:id/requests
+ * @desc    Lists booking requests for a specific ride offering (driver only).
+ */
+router.get('/:id/requests', authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
+  const { id: rideId } = req.params;
+  const { id: driverId } = req.user!;
+
+  try {
+    const requests = await BookingService.getRequestsForRide(rideId, driverId);
+    return res.status(200).json({
+      success: true,
+      data: requests,
+    });
+  } catch (error: any) {
+    console.error('Fetch requests error:', error.message);
+    const isDeny = error.message.includes('Access denied');
+    return res.status(isDeny ? 403 : 500).json({
+      success: false,
+      message: error.message || 'Failed to retrieve booking requests.',
+    });
+  }
+});
+
+
+
+/**
+ * @route   PATCH /api/rides/requests/:requestId
+ * @desc    Updates booking status (driver approves/rejects, or passenger cancels).
+ */
+router.patch('/requests/:requestId', authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
+  const { requestId } = req.params;
+  const { status } = req.body; // 'accepted', 'rejected', 'cancelled'
+  const { id: userId } = req.user!;
+
+  if (!status || !['accepted', 'rejected', 'cancelled'].includes(status)) {
+    return res.status(400).json({
+      success: false,
+      message: 'Invalid status update target.',
+    });
+  }
+
+  try {
+    const updated = await BookingService.updateRequestStatus(requestId, userId, status);
+    return res.status(200).json({
+      success: true,
+      message: `Booking status updated to ${status} successfully.`,
+      data: updated,
+    });
+  } catch (error: any) {
+    console.error('Update request status error:', error.message);
+    const isDeny = error.message.includes('Access denied') || error.message.includes('filled');
+    return res.status(isDeny ? 403 : 500).json({
+      success: false,
+      message: error.message || 'Failed to update booking status.',
+    });
+  }
+});
+
+/**
+ * @route   DELETE /api/rides/requests/:requestId
+ * @desc    Deletes/cancels request (equivalent to cancelling request).
+ */
+router.delete('/requests/:requestId', authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
+  const { requestId } = req.params;
+  const { id: userId } = req.user!;
+
+  try {
+    // Treat deletion as cancellation to restore seats if accepted
+    await BookingService.updateRequestStatus(requestId, userId, 'cancelled');
+    return res.status(200).json({
+      success: true,
+      message: 'Booking request cancelled and deleted successfully.',
+    });
+  } catch (error: any) {
+    console.error('Delete request error:', error.message);
+    const isDeny = error.message.includes('Access denied');
+    return res.status(isDeny ? 403 : 500).json({
+      success: false,
+      message: error.message || 'Failed to cancel booking request.',
     });
   }
 });
