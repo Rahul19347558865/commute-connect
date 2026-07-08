@@ -6,7 +6,7 @@ import { supabase } from './supabase';
  * and auto-signout response interceptors on session invalidations.
  */
 export const apiClient = axios.create({
-  baseURL: '',
+  baseURL: import.meta.env.VITE_API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
