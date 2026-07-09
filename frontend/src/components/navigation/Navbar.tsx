@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProfile } from '../../hooks/useProfile';
 import { useNotificationsList } from '../../hooks/useNotifications';
-import { Menu } from '../icons';
+import { Menu, Moon, Sun } from '../icons';
 import { Button } from '../ui/Button';
 import { Avatar } from '../ui/Avatar';
 
@@ -24,6 +24,31 @@ export const Navbar = React.forwardRef<HTMLElement, NavbarProps>(
     const navigate = useNavigate();
     const { data: profile } = useProfile();
     const { data: notifications } = useNotificationsList();
+
+    const [isDarkMode, setIsDarkMode] = React.useState(
+      document.documentElement.classList.contains('dark')
+    );
+
+    React.useEffect(() => {
+      const handleThemeChange = () => {
+        setIsDarkMode(document.documentElement.classList.contains('dark'));
+      };
+      window.addEventListener('theme-changed', handleThemeChange);
+      return () => window.removeEventListener('theme-changed', handleThemeChange);
+    }, []);
+
+    const toggleTheme = () => {
+      const isDark = !isDarkMode;
+      setIsDarkMode(isDark);
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+      }
+      window.dispatchEvent(new Event('theme-changed'));
+    };
 
     const unreadCount = notifications?.filter((n: any) => !n.is_read).length || 0;
     const userName = profile?.full_name || 'Commuter';
@@ -86,6 +111,19 @@ export const Navbar = React.forwardRef<HTMLElement, NavbarProps>(
         {/* Right Side: Action CTA & User Avatar */}
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-3">
+            {/* Theme Toggle Icon Trigger */}
+            <button
+              onClick={toggleTheme}
+              className="p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-neutral-textSub hover:text-neutral-textMain focus:outline-none transition-colors duration-theme-fast cursor-pointer"
+              aria-label="Toggle theme mode"
+            >
+              {isDarkMode ? (
+                <Sun className="w-5 h-5" />
+              ) : (
+                <Moon className="w-5 h-5" />
+              )}
+            </button>
+
             {/* Notification Bell Icon Trigger */}
             <button
               onClick={() => navigate('/notifications')}

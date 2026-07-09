@@ -29,6 +29,14 @@ export const SettingsPage: React.FC = () => {
     document.documentElement.classList.contains('dark')
   );
 
+  React.useEffect(() => {
+    const handleThemeChange = () => {
+      setIsDarkMode(document.documentElement.classList.contains('dark'));
+    };
+    window.addEventListener('theme-changed', handleThemeChange);
+    return () => window.removeEventListener('theme-changed', handleThemeChange);
+  }, []);
+
   const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newPassword || !confirmPassword) {
@@ -68,6 +76,7 @@ export const SettingsPage: React.FC = () => {
       document.documentElement.classList.remove('dark');
       localStorage.setItem('theme', 'light');
     }
+    window.dispatchEvent(new Event('theme-changed'));
     toast('success', `Theme switched to ${isDark ? 'Dark' : 'Light'} Mode.`);
   };
 
