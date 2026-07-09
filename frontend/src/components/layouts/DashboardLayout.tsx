@@ -74,7 +74,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         {/* Mobile Sidebar overlay backdrop drawer */}
         {isSidebarOpen && (
           <div
-            className="fixed inset-0 z-layer-overlay bg-slate-900/40 backdrop-blur-xs md:hidden transition-opacity duration-theme-normal"
+            className="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-xs md:hidden transition-opacity duration-theme-normal"
             onClick={closeSidebar}
             aria-hidden="true"
           />

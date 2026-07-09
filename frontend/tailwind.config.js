@@ -66,10 +66,12 @@ export default {
       },
       // Centralized Z-Index Hierarchy Layering
       zIndex: {
+        'layer-base': '1',
         'layer-dropdown': '10',
         'layer-sticky': '20',
         'layer-bottomNav': '30',
         'layer-overlay': '40',
+        'layer-drawer': '45',
         'layer-modal': '50',
         'layer-toast': '60',
         'layer-tooltip': '70',

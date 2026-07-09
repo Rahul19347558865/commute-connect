@@ -41,7 +41,7 @@ export const Sidebar = React.forwardRef<HTMLDivElement, SidebarProps>(
     return (
       <div
         ref={ref}
-        className={`fixed inset-y-0 left-0 z-layer-drawer flex w-72 flex-col bg-neutral-surface dark:bg-slate-900 border-r border-neutral-borderLine dark:border-slate-800 shadow-shadow-medium transition-transform duration-theme-normal md:sticky md:translate-x-0 md:h-[calc(100vh-4rem)] md:top-16
+        className={`fixed inset-y-0 left-0 z-50 md:z-auto flex w-72 flex-col bg-neutral-surface dark:bg-slate-900 border-r border-neutral-borderLine dark:border-slate-800 shadow-shadow-medium transition-transform duration-theme-normal md:sticky md:translate-x-0 md:h-[calc(100vh-4rem)] md:top-16
           ${isOpen ? 'translate-x-0' : '-translate-x-full'}
           ${className}
         `}

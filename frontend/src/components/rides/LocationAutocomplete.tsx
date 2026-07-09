@@ -28,12 +28,18 @@ export const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
   const [results, setResults] = useState<NominatimSearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState<number>(-1);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Sync with initial value updates
   useEffect(() => {
     setQuery(initialValue);
   }, [initialValue]);
+
+  // Reset active index when results change or list closes
+  useEffect(() => {
+    setActiveIndex(-1);
+  }, [results, isOpen]);
 
   // Debounced geocoding search
   useEffect(() => {
@@ -78,6 +84,25 @@ export const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
     onSelect({ address, lat, lon });
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!isOpen || results.length === 0) return;
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setActiveIndex((prev) => (prev + 1) % results.length);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setActiveIndex((prev) => (prev - 1 + results.length) % results.length);
+    } else if (e.key === 'Enter') {
+      if (activeIndex >= 0 && activeIndex < results.length) {
+        e.preventDefault();
+        handleItemSelect(results[activeIndex]);
+      }
+    } else if (e.key === 'Escape') {
+      setIsOpen(false);
+    }
+  };
+
   return (
     <div ref={containerRef} className="relative w-full">
       <Input
@@ -89,6 +114,7 @@ export const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
           setIsOpen(true);
         }}
         onFocus={() => setIsOpen(true)}
+        onKeyDown={handleKeyDown}
         error={error}
         disabled={disabled}
         aria-autocomplete="list"
@@ -106,17 +132,26 @@ export const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
               Searching locations...
             </li>
           ) : (
-            results.map((item, idx) => (
-              <li
-                key={idx}
-                onClick={() => handleItemSelect(item)}
-                className="p-3 text-small text-neutral-textMain dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-850 cursor-pointer border-b last:border-0 border-neutral-borderLine dark:border-slate-800 transition-colors"
-                role="option"
-                aria-selected={false}
-              >
-                {item.display_name}
-              </li>
-            ))
+            results.map((item, idx) => {
+              const isActive = idx === activeIndex;
+              return (
+                <li
+                  key={idx}
+                  onClick={() => handleItemSelect(item)}
+                  onMouseEnter={() => setActiveIndex(idx)}
+                  className={`p-3 text-small border-b last:border-0 border-neutral-borderLine dark:border-slate-850 transition-colors duration-theme-fast cursor-pointer select-none
+                    ${isActive
+                      ? 'bg-brand-primary text-white dark:bg-brand-primary dark:text-white'
+                      : 'text-neutral-textMain dark:text-slate-200 hover:bg-brand-primary/10 dark:hover:bg-brand-primary/20 hover:text-brand-primary dark:hover:text-blue-400'
+                    }
+                  `}
+                  role="option"
+                  aria-selected={isActive}
+                >
+                  {item.display_name}
+                </li>
+              );
+            })
           )}
         </ul>
       )}

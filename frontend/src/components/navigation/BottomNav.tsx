@@ -25,7 +25,7 @@ export const BottomNav = React.forwardRef<HTMLElement, BottomNavProps>(
     return (
       <nav
         ref={ref}
-        className={`fixed bottom-0 left-0 right-0 z-layer-sticky md:hidden bg-neutral-surface dark:bg-slate-900 border-t border-neutral-borderLine dark:border-slate-800 shadow-shadow-medium flex items-center justify-around h-16 px-4 safe-bottom ${className}`}
+        className={`fixed bottom-0 left-0 right-0 z-20 md:hidden bg-neutral-surface dark:bg-slate-900 border-t border-neutral-borderLine dark:border-slate-800 shadow-shadow-medium flex items-center justify-around h-16 px-4 safe-bottom ${className}`}
         {...props}
       >
         {navItems.map((item) => {
