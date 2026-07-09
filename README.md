@@ -1,53 +1,254 @@
-# Commute Connect 🚗
+# 🚗 Commute Connect
 
-A premium full-stack carpooling and ride-sharing web application designed for daily commuting, matching passengers and drivers going to similar offices or colleges.
+A modern full-stack ride-sharing web application built for students and working professionals to find, offer, and manage daily commute rides in a simple, secure, and user-friendly way.
 
-## Key Features
-
-1. **Secure Autocomplete Matching:** Driver routes matching based on Leaflet mapping, OSRM routing metrics, and address lookup via Nominatim geocoding.
-2. **Real-time GPS Tracking:** Real-time driver coordinates streaming directly onto passengers' map views via Supabase websocket changes channels.
-3. **In-App Messaging Chat:** Participant communication channels with push notifications logic.
-4. **Moderation & Audits Console:** Full admin overview dashboard statistics, user suspensions toggling, and reports queue moderation panel.
-5. **PWA Standalone Shell:** Offline service worker caching policies with custom manifest parameters for mobile devices installs.
-
-## Tech Stack
-
-* **Frontend:** React SPA, Vite, TypeScript, React Query (TanStack), Leaflet maps.
-* **Backend:** Express.js, TypeScript, Supabase JS SDK, JWT verify middlewares.
-* **Database:** PostgreSQL, Supabase Row-Level Security (RLS) policies.
+🔗 **Live Demo:** https://commute-connect-neon.vercel.app
 
 ---
 
-## Launching with Docker Compose
+## 📖 About the Project
 
-Ensure docker is installed, and you copy `.env.example` values to a local `.env` root configuration file. Then launch:
+Commute Connect was built to solve the problem of daily commuting by connecting people travelling on similar routes.
 
-```bash
-docker-compose up --build -d
-```
+Instead of travelling alone, users can offer rides, search for available rides, and connect with other commuters while reducing travel costs and making commuting more convenient.
 
-* **Frontend portal:** runs on `http://localhost` (Port 80)
-* **Backend REST API:** runs on `http://localhost:5000`
+This project was built as a complete full-stack application to strengthen my skills in frontend development, backend APIs, authentication, database integration, deployment, and responsive UI design.
 
 ---
 
-## Manual Local Development Setup
+# ✨ Features
 
-### 1. Database Setup
-Register the database schema definitions inside your Supabase SQL editor using the script at:
-[`backend/src/config/schema.sql`](file:///c:/Users/ASUS/OneDrive/Desktop/Projects/commute-connect/backend/src/config/schema.sql)
+### 👤 Authentication
 
-### 2. Backend Server launch
-```bash
-cd backend
-npm install
-npm run dev
+- Secure user registration & login
+- Supabase Authentication
+- Protected routes
+- Profile creation after signup
+- Password reset support
+
+### 🚘 Ride Management
+
+- Offer a ride
+- Search available rides
+- Filter rides
+- Ride details page
+- Live ride preview
+- Vehicle information
+
+### 📍 Location Search
+
+- Location autocomplete
+- Smart address suggestions
+- Pickup & destination selection
+
+### 👤 User Profile
+
+- Edit profile
+- Profile photo
+- Contact information
+- Vehicle information
+- User preferences
+
+### 🎨 User Experience
+
+- Responsive design
+- Mobile friendly navigation
+- Dark / Light theme
+- Toast notifications
+- Loading states
+- Clean modern UI
+
+### 🔒 Security
+
+- JWT Authentication
+- Protected API endpoints
+- Secure backend validation
+
+---
+
+# 🛠 Tech Stack
+
+## Frontend
+
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- React Router
+- React Query
+- Axios
+
+## Backend
+
+- Node.js
+- Express.js
+- TypeScript
+
+## Database & Authentication
+
+- Supabase
+- PostgreSQL
+
+## Deployment
+
+- Vercel (Frontend)
+- Render (Backend)
+
+---
+
+# 📸 Screenshots
+
+You can add screenshots here.
+
+Example:
+
+- Login Page
+- Dashboard
+- Find Ride
+- Offer Ride
+- Profile Page
+- Mobile View
+
+---
+
+# 📂 Project Structure
+
+```
+commute-connect
+│
+├── frontend
+│   ├── src
+│   ├── public
+│   └── components
+│
+├── backend
+│   ├── src
+│   ├── routes
+│   ├── middleware
+│   └── services
+│
+└── docs
 ```
 
-### 3. Frontend Web launch
+---
+
+# ⚙️ Installation
+
+## Clone the repository
+
+```bash
+git clone https://github.com/Rahul19347558865/commute-connect.git
+```
+
+## Navigate into the project
+
+```bash
+cd commute-connect
+```
+
+## Install frontend dependencies
+
 ```bash
 cd frontend
 npm install
+```
+
+## Install backend dependencies
+
+```bash
+cd ../backend
+npm install
+```
+
+---
+
+# ▶️ Running the Project
+
+### Backend
+
+```bash
 npm run dev
 ```
-Matches local client execution at `http://localhost:5173`.
+
+Runs on:
+
+```
+http://localhost:5000
+```
+
+### Frontend
+
+```bash
+npm run dev
+```
+
+Runs on:
+
+```
+http://localhost:5173
+```
+
+---
+
+# 🌍 Live Deployment
+
+Frontend
+
+https://commute-connect-neon.vercel.app
+
+Backend
+
+https://commute-connect-api-kbcc.onrender.com
+
+---
+
+# 💡 What I Learned
+
+While building this project, I learned:
+
+- Building full-stack applications
+- Authentication using Supabase
+- REST API development
+- React Query
+- Protected Routes
+- Responsive UI Design
+- Deployment using Vercel & Render
+- Git & GitHub workflow
+- Environment variable management
+- Debugging production deployment issues
+
+---
+
+# 🚀 Future Improvements
+
+- Real-time ride booking
+- Live chat between users
+- Google Maps integration
+- Route optimization
+- Push notifications
+- Ride history
+- Ratings & reviews
+- Admin dashboard
+- Payment integration
+- Email notifications
+
+---
+
+# 👨‍💻 Author
+
+**Pulipati Rahul**
+
+Diploma in Computer Science Engineering
+
+Aspiring Full Stack Developer
+
+GitHub:
+https://github.com/Rahul19347558865
+
+---
+
+# ⭐ Support
+
+If you found this project interesting, consider giving it a ⭐ on GitHub.
+
+It motivates me to keep building and improving projects.
