@@ -137,7 +137,7 @@ commute-connect
 ## Clone the repository
 
 ```bash
-git clone https://github.com/Rahul19347558865/commute-connect.git
+git clone https//:commute-connect.git
 ```
 
 ## Navigate into the project
